@@ -16,9 +16,9 @@ class DownloadHTML:
                           '\r\nAccept-Language: ro,en' \
                           '\r\nAllow: GET' \
                           '\r\nDNT: 1' \
-                          '\r\nSave-Data: on\r\n\r\n'.format(self.host).encode()
+                          '\r\nSave-Data: on\r\n\r\n'.format(self.host)
 
-        sock.sendall(request_headers)
+        sock.sendall(request_headers.encode())
 
         response = b''
         while True:

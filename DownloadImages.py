@@ -19,6 +19,8 @@ class DownloadImages:
             if not len(self.images_links):
                 break
 
+            print(f"Downloading in thread: {threading.current_thread()}")
+
             link = self.images_links.pop()
             sock = get_socket_connection(self.host, self.port)
             url = urlparse(link)
