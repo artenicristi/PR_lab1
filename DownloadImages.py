@@ -1,7 +1,6 @@
 import os
 import re
-import socket
-import ssl
+from Socket import get_socket_connection
 from urllib.parse import urlparse
 import threading
 
@@ -11,7 +10,7 @@ class DownloadImages:
         self.host = host
         self.port = port
         self.images_links = images_links
-        self.sem = threading.Semaphore(3)
+        self.sem = threading.Semaphore(2)
 
     def download(self):
         while len(self.images_links):
@@ -21,18 +20,9 @@ class DownloadImages:
                 break
 
             link = self.images_links.pop()
-
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_address = (self.host, self.port)
-            sock.connect(server_address)
-            print(f"Downloading in thread: {threading.current_thread()}")
-
-            if self.port == 443:
-                context = ssl.create_default_context()
-                sock = context.wrap_socket(sock, server_hostname=self.host)
-
+            sock = get_socket_connection(self.host, self.port)
             url = urlparse(link)
-            request = "GET {} HTTP/1.1\r\nHost: {}\r\n\r\n".format(url.path, self.host)
+            request = "GET {} HTTP/1.0\r\nHost: {}\r\n\r\n".format(url.path, self.host)
 
             sock.sendall(request.encode())
             response = sock.recv(1024)

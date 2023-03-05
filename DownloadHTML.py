@@ -1,5 +1,4 @@
-import socket
-import ssl
+from Socket import get_socket_connection
 
 
 class DownloadHTML:
@@ -8,14 +7,7 @@ class DownloadHTML:
         self.port = port
 
     def download(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_address = (self.host, self.port)
-        sock.connect(server_address)
-        print('Connecting to %s on port %s' % server_address)
-
-        if self.port == 443:
-            context = ssl.create_default_context()
-            sock = context.wrap_socket(sock, server_hostname=self.host)
+        sock = get_socket_connection(self.host, self.port)
 
         request_headers = 'GET / HTTP/1.0\r\nHOST: {}' \
                           '\r\nAccept: text/html' \
